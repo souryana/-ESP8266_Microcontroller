@@ -6,7 +6,7 @@ It also subscribes to a topic to receive commands for controlling the intensity 
 connected to it. The project leverages Node-RED, an open-source flow-based programming tool,
 to create a visual interface for monitoring and controlling the device.
 
-##Functionalities
+## Functionalities
 - [x] Sensor Data: the DHT11 measures temperature and humidity, while the MQ2 sensor
 detects gas presence such as smoke, butane, propane, methane, alcohol and hydrogen in
 the air.
