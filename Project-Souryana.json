@@ -1,0 +1,600 @@
+[
+    {
+        "id": "324c893fef957636",
+        "type": "tab",
+        "label": "Flow 2",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "f10a99cfcc22840b",
+        "type": "mqtt in",
+        "z": "324c893fef957636",
+        "name": "",
+        "topic": "IOT2/ESP809158/data",
+        "qos": "2",
+        "datatype": "auto",
+        "broker": "33e8b55a708f7ff9",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "x": 100,
+        "y": 160,
+        "wires": [
+            [
+                "54e55423a1881038"
+            ]
+        ]
+    },
+    {
+        "id": "54e55423a1881038",
+        "type": "json",
+        "z": "324c893fef957636",
+        "name": "",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 290,
+        "y": 160,
+        "wires": [
+            [
+                "a0e29e130f9d4b8f"
+            ]
+        ]
+    },
+    {
+        "id": "a0e29e130f9d4b8f",
+        "type": "function",
+        "z": "324c893fef957636",
+        "name": "date and null control",
+        "func": "msg.payload.date = new Date();\nvar temp = msg.payload.Sensor.temp;\nvar hum = msg.payload.Sensor.hum;\n    if (isNaN(temp)) {\n       msg.payload.DHT11.temp = flow.get(\"lasttemp\"); \n    } if(isNaN(hum)){\n        msg.payload.DHT11.hum = flow.get(\"lasthum\");\n    }\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 480,
+        "y": 160,
+        "wires": [
+            [
+                "200439e6dce018e3"
+            ]
+        ]
+    },
+    {
+        "id": "200439e6dce018e3",
+        "type": "mongodb out",
+        "z": "324c893fef957636",
+        "mongodb": "63e24af8e751b6db",
+        "name": "",
+        "collection": "datos",
+        "payonly": true,
+        "upsert": false,
+        "multi": false,
+        "operation": "store",
+        "x": 740,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "b0b41277709a051a",
+        "type": "mongodb in",
+        "z": "324c893fef957636",
+        "mongodb": "63e24af8e751b6db",
+        "name": "",
+        "collection": "datos",
+        "operation": "find",
+        "x": 480,
+        "y": 340,
+        "wires": [
+            [
+                "4c6a85cb2a27e2fd",
+                "b26442b305e5e70e",
+                "07028f9b34a1b9b4"
+            ]
+        ]
+    },
+    {
+        "id": "c3c9c57bbcee2cd8",
+        "type": "function",
+        "z": "324c893fef957636",
+        "name": "Last message",
+        "func": "msg.sort={\"date\":-1};\nmsg.limit=1;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 260,
+        "y": 340,
+        "wires": [
+            [
+                "b0b41277709a051a"
+            ]
+        ]
+    },
+    {
+        "id": "2d20c44641c46ef8",
+        "type": "ui_ui_control",
+        "z": "324c893fef957636",
+        "name": "",
+        "events": "connect",
+        "x": 60,
+        "y": 440,
+        "wires": [
+            [
+                "c3c9c57bbcee2cd8",
+                "391a0136a7f2f7e9"
+            ]
+        ]
+    },
+    {
+        "id": "4c6a85cb2a27e2fd",
+        "type": "change",
+        "z": "324c893fef957636",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload[0].Sensor.temp",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 770,
+        "y": 340,
+        "wires": [
+            [
+                "d45fd854b503a034",
+                "eb2acfe90ede4772"
+            ]
+        ]
+    },
+    {
+        "id": "d45fd854b503a034",
+        "type": "ui_gauge",
+        "z": "324c893fef957636",
+        "name": "",
+        "group": "5ce8ae37a633dd4c",
+        "order": 0,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "Temperature",
+        "label": "Celsius",
+        "format": "{{value | number:2}}",
+        "min": "-20",
+        "max": "50",
+        "colors": [
+            "#ffff00",
+            "#008000",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "className": "",
+        "x": 1030,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "eb2acfe90ede4772",
+        "type": "debug",
+        "z": "324c893fef957636",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1010,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "7ca50fd6c0c8ad68",
+        "type": "mqtt in",
+        "z": "324c893fef957636",
+        "name": "",
+        "topic": "IOT2/ESP809158/conexion",
+        "qos": "2",
+        "datatype": "auto",
+        "broker": "33e8b55a708f7ff9",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "x": 120,
+        "y": 80,
+        "wires": [
+            [
+                "39341a2f037ee2e6"
+            ]
+        ]
+    },
+    {
+        "id": "3404577932121cc1",
+        "type": "ui_slider",
+        "z": "324c893fef957636",
+        "name": "",
+        "label": "LED intensity",
+        "tooltip": "",
+        "group": "5ce8ae37a633dd4c",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "outs": "end",
+        "topic": "topic",
+        "topicType": "msg",
+        "min": 0,
+        "max": "100",
+        "step": 1,
+        "className": "",
+        "x": 100,
+        "y": 800,
+        "wires": [
+            [
+                "e492bd435c7b370c"
+            ]
+        ]
+    },
+    {
+        "id": "09cefa443df51549",
+        "type": "mqtt out",
+        "z": "324c893fef957636",
+        "name": "",
+        "topic": "IOT2/ESP809158/led/cmd",
+        "qos": "",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "33e8b55a708f7ff9",
+        "x": 500,
+        "y": 800,
+        "wires": []
+    },
+    {
+        "id": "e492bd435c7b370c",
+        "type": "function",
+        "z": "324c893fef957636",
+        "name": "",
+        "func": "msg.payload = {\"level\":msg.payload}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 300,
+        "y": 800,
+        "wires": [
+            [
+                "09cefa443df51549"
+            ]
+        ]
+    },
+    {
+        "id": "b26442b305e5e70e",
+        "type": "change",
+        "z": "324c893fef957636",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload[0].Sensor.hum",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 770,
+        "y": 400,
+        "wires": [
+            [
+                "2cdbb46af6cbbc01"
+            ]
+        ]
+    },
+    {
+        "id": "07028f9b34a1b9b4",
+        "type": "change",
+        "z": "324c893fef957636",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload[0].Sensor.gas_leak",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 770,
+        "y": 460,
+        "wires": [
+            [
+                "8a94fd541f9b742b"
+            ]
+        ]
+    },
+    {
+        "id": "2cdbb46af6cbbc01",
+        "type": "ui_gauge",
+        "z": "324c893fef957636",
+        "name": "",
+        "group": "5ce8ae37a633dd4c",
+        "order": 0,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "Humidity",
+        "label": "%",
+        "format": "{{value}}",
+        "min": "0",
+        "max": "100",
+        "colors": [
+            "#ffff00",
+            "#008000",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "className": "",
+        "x": 1020,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "29fadce4cabc8404",
+        "type": "ui_audio",
+        "z": "324c893fef957636",
+        "name": "",
+        "group": "5ce8ae37a633dd4c",
+        "voice": "urn:moz-tts:sapi:Microsoft David - English (United States)?en-US",
+        "always": "",
+        "x": 1120,
+        "y": 480,
+        "wires": []
+    },
+    {
+        "id": "8a94fd541f9b742b",
+        "type": "function",
+        "z": "324c893fef957636",
+        "name": "",
+        "func": "if (msg.payload == 1){\n    msg.payload = \"Gas leakage detected!\";\n}\nelse{\n    msg.payload = \"\";\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 950,
+        "y": 480,
+        "wires": [
+            [
+                "29fadce4cabc8404"
+            ]
+        ]
+    },
+    {
+        "id": "391a0136a7f2f7e9",
+        "type": "function",
+        "z": "324c893fef957636",
+        "name": "History",
+        "func": "msg.sort={\"date\":-1};\n//msg.projection = { \"date\":1, \"Sensor.temp\":1};\nmsg.payload = {\"online\": { \"$exists\": false }}; //filter out connection rows\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 180,
+        "y": 540,
+        "wires": [
+            [
+                "a00323457736c173"
+            ]
+        ]
+    },
+    {
+        "id": "75f902a257dfc492",
+        "type": "ui_chart",
+        "z": "324c893fef957636",
+        "name": "",
+        "group": "5ce8ae37a633dd4c",
+        "order": 4,
+        "width": 0,
+        "height": 0,
+        "label": "Temperature",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 850,
+        "y": 540,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "a00323457736c173",
+        "type": "mongodb in",
+        "z": "324c893fef957636",
+        "mongodb": "63e24af8e751b6db",
+        "name": "",
+        "collection": "datos",
+        "operation": "find",
+        "x": 420,
+        "y": 540,
+        "wires": [
+            [
+                "565ad937e1759fdd"
+            ]
+        ]
+    },
+    {
+        "id": "565ad937e1759fdd",
+        "type": "function",
+        "z": "324c893fef957636",
+        "name": "",
+        "func": "var temps=[];\nif(Array.isArray(msg.payload) && msg.payload.length>0){\n    for (var i = 0; i < msg.payload.length; i++) {\n        temps.push({x : msg.payload[i].date , y : msg.payload[i].Sensor.temp});\n    }\n}   \nmsg.payload = [{\n        \"series\":[\"Temperature\"],\n        \"data\":[temps],\n        \"labels\":[\"\"]\n        }];\nreturn msg;  ",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 660,
+        "y": 540,
+        "wires": [
+            [
+                "75f902a257dfc492"
+            ]
+        ]
+    },
+    {
+        "id": "39341a2f037ee2e6",
+        "type": "json",
+        "z": "324c893fef957636",
+        "name": "",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 350,
+        "y": 80,
+        "wires": [
+            [
+                "4a6068d86aa7bf25"
+            ]
+        ]
+    },
+    {
+        "id": "4a6068d86aa7bf25",
+        "type": "function",
+        "z": "324c893fef957636",
+        "name": "date",
+        "func": "msg.payload.date = new Date();\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 510,
+        "y": 80,
+        "wires": [
+            [
+                "1c143b375e2a6eb8"
+            ]
+        ]
+    },
+    {
+        "id": "1c143b375e2a6eb8",
+        "type": "mongodb out",
+        "z": "324c893fef957636",
+        "mongodb": "63e24af8e751b6db",
+        "name": "",
+        "collection": "datos",
+        "payonly": true,
+        "upsert": false,
+        "multi": false,
+        "operation": "store",
+        "x": 760,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "33e8b55a708f7ff9",
+        "type": "mqtt-broker",
+        "name": "",
+        "broker": "iot.ac.uma.es",
+        "port": "1883",
+        "clientid": "",
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": "",
+        "willMsg": {},
+        "sessionExpiry": ""
+    },
+    {
+        "id": "63e24af8e751b6db",
+        "type": "mongodb",
+        "hostname": "iot.ac.uma.es",
+        "topology": "direct",
+        "connectOptions": "",
+        "port": "27017",
+        "db": "IOT2",
+        "name": ""
+    },
+    {
+        "id": "5ce8ae37a633dd4c",
+        "type": "ui_group",
+        "name": "IoT",
+        "tab": "e95d4519b3257d06",
+        "order": 1,
+        "disp": true,
+        "width": "6",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "e95d4519b3257d06",
+        "type": "ui_tab",
+        "name": "Home",
+        "icon": "dashboard",
+        "disabled": false,
+        "hidden": false
+    }
+]
