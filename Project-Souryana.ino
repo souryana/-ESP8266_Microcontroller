@@ -16,7 +16,7 @@ PubSubClient mqtt_client(wClient);
 DHTesp dht;
 SoftwareSerial SerialSoft(SoftRX, SoftTX); // RX, TX
 
-//Set connection variables
+//Set connection variable
 const char* ssid = "root";             // WiFi network SSID
 const char* password = "root";        // WiFi network password
 const char* mqtt_server = "server"; // MQTT broker server address
